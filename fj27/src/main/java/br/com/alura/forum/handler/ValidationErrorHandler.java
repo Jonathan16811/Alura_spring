@@ -37,6 +37,12 @@ public class ValidationErrorHandler {
 		return validationErrors;
 		
 	}
+	
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	@ExceptionHandler(NullPointerException.class)
+	public String Bug() {
+		return "Teste Bug";
+	}
 
 	private String getErrorMessage(ObjectError error) {
 		return messageSource.getMessage(error, LocaleContextHolder.getLocale());

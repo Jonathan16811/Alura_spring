@@ -17,6 +17,7 @@ public class TopicBriefOutputDto {
 	private String shortDescription;
 	private long secondsSinceLastUpdate;
 	private String owerName;
+	private long creationInstant;
 	private String courseName;
 	private String subcategory;
 	private String categoryName;
@@ -24,19 +25,40 @@ public class TopicBriefOutputDto {
 	private boolean solved;
 	
 	public static Page<TopicBriefOutputDto> listFromTopics(Page<Topic> topics){
-		return topics.map(TopicBriefOutputDto::new);
+		return topics.map(TopicBriefOutputDto::new);		
 	}
 
 	public TopicBriefOutputDto(Topic topic) {
 		this.id = topic.getId();
 		this.shortDescription = topic.getShortDescription();
 		this.secondsSinceLastUpdate = getSecondsSinceLastUpdate(topic.getLastUpdate());
+		this.creationInstant = getCreationInstant(topic.getCreationInstant());
 		this.owerName = topic.getOwner().getName();
 		this.courseName = topic.getCourse().getName();
 		this.subcategory = topic.getCourse().getSubcategory().getName();
 		this.categoryName = topic.getCourse().getCategoryName();
 		this.numberOfResponses = topic.getNumberOfAnswers();
 		this.solved = TopicStatus.SOLVED.equals(topic.getStatus());
+	}
+
+	public long getCreationInstant(Instant instant) {
+		return creationInstant;
+	}
+
+	public void setCreationInstant(long creationInstant) {
+		this.creationInstant = creationInstant;
+	}
+
+	public String getSubcategory() {
+		return subcategory;
+	}
+
+	public void setSubcategory(String subcategory) {
+		this.subcategory = subcategory;
+	}
+
+	public long getSecondsSinceLastUpdate() {
+		return secondsSinceLastUpdate;
 	}
 
 	public Long getId() {
