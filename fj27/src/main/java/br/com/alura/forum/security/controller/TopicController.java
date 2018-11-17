@@ -23,10 +23,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import br.com.alura.forum.model.Answer;
 import br.com.alura.forum.model.User;
 import br.com.alura.forum.model.topic_domain.Topic;
+import br.com.alura.forum.repository.AnswerRepository;
 import br.com.alura.forum.repository.CourseRepository;
 import br.com.alura.forum.repository.TopicRepository;
+import br.com.alura.forum.security.controller.dto.input.FindOutputDto;
 import br.com.alura.forum.security.controller.dto.input.NewTopicInputDto;
 import br.com.alura.forum.security.controller.dto.output.TopicOutputDto;
 import br.com.alura.forum.validator.NewTopicCustomValidator;
@@ -40,6 +43,9 @@ public class TopicController {
 
 	@Autowired
 	private CourseRepository courseRepository;
+	
+	@Autowired
+	private AnswerRepository answerRepository;
 
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public Page<TopicBriefOutputDto> listTopics(TopicSearchInputDto topicSearch,
@@ -78,10 +84,14 @@ public class TopicController {
 	}
 
 	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public TopicBriefOutputDto findTopic(@PathVariable(value = "id") Long id) {
-
+	public FindOutputDto findTopic(@PathVariable(value = "id") Long id) {
 		return this.topicRepository.findById(id);
 		
+	}
+	
+	@PostMapping(value = "/{id}/answers")
+	public Answer save(@RequestBody @Valid Answer answer) {
+		return answerRepository.save(answer);
 	}
 
 }

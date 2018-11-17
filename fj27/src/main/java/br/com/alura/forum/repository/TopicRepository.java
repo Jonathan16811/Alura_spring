@@ -13,6 +13,7 @@ import org.springframework.data.repository.Repository;
 import br.com.alura.forum.model.User;
 import br.com.alura.forum.model.topic_domain.Topic;
 import br.com.alura.forum.security.controller.TopicBriefOutputDto;
+import br.com.alura.forum.security.controller.dto.input.FindOutputDto;
 
 public interface TopicRepository extends Repository<Topic, Long>, JpaSpecificationExecutor<Topic>{
 	
@@ -23,7 +24,7 @@ public interface TopicRepository extends Repository<Topic, Long>, JpaSpecificati
 
 	List<Topic> findByOwnerAndCreationInstantAfterOrderByCreationInstantAsc(User loggedUser, Instant oneHourAgo);
 
-	TopicBriefOutputDto findById(Long id);
+	FindOutputDto findById(Long id);
 
 	
 	

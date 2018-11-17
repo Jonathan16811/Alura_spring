@@ -1,42 +1,55 @@
-package br.com.alura.forum.security.controller;
+package br.com.alura.forum.security.controller.dto.input;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.OneToMany;
+
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.data.domain.Page;
 
+import br.com.alura.forum.model.Answer;
 import br.com.alura.forum.model.topic_domain.Topic;
 import br.com.alura.forum.model.topic_domain.TopicStatus;
 
-public class TopicBriefOutputDto {
+public class FindOutputDto {
 
 	private Long id;
 	private String shortDescription;
-	private long secondsSinceLastUpdate;
-	private String owerName;
+	private String content;
+	private TopicStatus status;
 	private long creationInstant;
+	private long lastUpdate;
 	private String courseName;
 	private String subcategory;
 	private String categoryName;
+	private String owerName;
 	private int numberOfResponses;
-	private boolean solved;
+	@OneToMany(mappedBy = "topic")
+	@LazyCollection(LazyCollectionOption.EXTRA)
+	private List<Answer> answers = new ArrayList<>();
 	
-	public static Page<TopicBriefOutputDto> listFromTopics(Page<Topic> topics){
-		return topics.map(TopicBriefOutputDto::new);		
+	public static Page<FindOutputDto> listFromTopics(Page<Topic> topics){
+		return topics.map(FindOutputDto::new);		
 	}
 
-	public TopicBriefOutputDto(Topic topic) {
+	public FindOutputDto(Topic topic) {
 		this.id = topic.getId();
 		this.shortDescription = topic.getShortDescription();
-		this.secondsSinceLastUpdate = getSecondsSinceLastUpdate(topic.getLastUpdate());
+		this.content = topic.getContent();
+		this.status = topic.getStatus();
 		this.creationInstant = getCreationInstant(topic.getCreationInstant());
-		this.owerName = topic.getOwner().getName();
+		this.lastUpdate = getLastUpdate(topic.getLastUpdate());
 		this.courseName = topic.getCourse().getName();
 		this.subcategory = topic.getCourse().getSubcategory().getName();
 		this.categoryName = topic.getCourse().getCategoryName();
+		this.owerName = topic.getOwner().getName();
 		this.numberOfResponses = topic.getNumberOfAnswers();
-		this.solved = TopicStatus.SOLVED.equals(topic.getStatus());
+		this.answers = topic.getAnswers();
 	}
 
 	public long getCreationInstant(Instant instant) {
@@ -56,7 +69,7 @@ public class TopicBriefOutputDto {
 	}
 
 	public long getSecondsSinceLastUpdate() {
-		return secondsSinceLastUpdate;
+		return lastUpdate;
 	}
 
 	public Long getId() {
@@ -75,12 +88,12 @@ public class TopicBriefOutputDto {
 		this.shortDescription = shortDescription;
 	}
 
-	public long getSecondsSinceLastUpdate(Instant instant) {
+	public long getLastUpdate(Instant instant) {
 		return Duration.between(instant, Instant.now()).get(ChronoUnit.SECONDS);
 	}
 
-	public void setSecondsSinceLastUpdate(long secondsSinceLastUpdate) {
-		this.secondsSinceLastUpdate = secondsSinceLastUpdate;
+	public void setLastUpdate(long lastUpdate) {
+		this.lastUpdate = lastUpdate;
 	}
 
 	public String getOwerName() {
@@ -123,12 +136,32 @@ public class TopicBriefOutputDto {
 		this.numberOfResponses = numberOfResponses;
 	}
 
-	public boolean isSolved() {
-		return solved;
+	public String getContent() {
+		return content;
 	}
 
-	public void setSolved(boolean solved) {
-		this.solved = solved;
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public TopicStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(TopicStatus status) {
+		this.status = status;
+	}
+
+	public long getCreationInstant() {
+		return creationInstant;
+	}
+
+	public List<Answer> getAnswers() {
+		return answers;
+	}
+
+	public void setAnswers(List<Answer> answers) {
+		this.answers = answers;
 	}
 
 }

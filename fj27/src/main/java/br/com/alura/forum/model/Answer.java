@@ -25,13 +25,6 @@ public class Answer {
 	@ManyToOne
 	private User owner;
 
-
-	/**
-	 * @deprecated
-	 */
-	public Answer() {
-	}
-
 	public Answer(String content, Topic topic, User owner) {
 		this.content = content;
 		this.topic = topic;
